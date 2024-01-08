@@ -1,4 +1,4 @@
-#include "Timebank/User.h"
+#include "User.h"
 
 User::User(std::string username, std::string password, std::string fullName, 
            std::string phoneNumber, std::string email, std::string address) 

@@ -1,7 +1,7 @@
 #ifndef SUPPORTER_H
 #define SUPPORTER_H
 
-#include "TimeBank/Member.h"
+#include "Member.h"
 
 class Supporter : public Member {
 public:
