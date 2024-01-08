@@ -2,10 +2,10 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "TimeBank/User.h"
-#include "Timebank/Member.h"
-#include "TimeBank/Supporter.h"
-#include "Timebank/Admin.h"
+#include "User.h"
+#include "Member.h"
+#include "Supporter.h"
+#include "Admin.h"
 
 // Global variables
 std::vector<Member> members; 
