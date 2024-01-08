@@ -1,7 +1,7 @@
 #ifndef MEMBER_H
 #define MEMBER_H
 
-#include "TimeBank/User.h"
+#include "User.h"
 
 class Member : public User {
 public:
