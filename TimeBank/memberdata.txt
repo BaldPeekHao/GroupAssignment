@@ -3,3 +3,5 @@ tuonghao123,HaoTruong123456,Truong Tuong Hao,0966877848,tuonghao2004@gmail.com,8
 locthien123,Thien12345,Truong Loc Thien,00000000000123123,thien2004@gmail.com,123Willishill
 duydinh123,Dinh123,Vo Duy Dinh,123123123123,duy2004@gmail.com,123
 tuonghao123123123123213,Truonghao123123213123123,Truong Hao Tuong,09113213213,Tuonghao2004@gmail.com,123123
+
+tuonghao1233,Truonghao123,Truong Tuong Hao,0966877848,tuonghao123@gmail.com,80 Bach Dang,Singing,5,0.6,20

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/ADMIN/Desktop/excercise/GroupAssignment",
-      "program": "c:/Users/ADMIN/Desktop/excercise/GroupAssignment/build/Debug/outDebug",
+      "cwd": "c:/Users/ADMIN/Desktop/excercise/GroupAssignment/TimeBank",
+      "program": "c:/Users/ADMIN/Desktop/excercise/GroupAssignment/TimeBank/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

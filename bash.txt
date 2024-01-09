@@ -1,0 +1,1 @@
+g++ main.cpp Admin.cpp Member.cpp User.cpp Supporter.cpp -o main

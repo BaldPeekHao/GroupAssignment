@@ -1,0 +1,2 @@
+username1,password1,FullName1,Phone1,Email1,Address1,20,4.5,City1
+thienminh123,Minh123,Huynh Nguyen Thien Minh,123123123123,minh2004@gmail.com,123,30,5.0,Ho Chi Minh
