@@ -59,7 +59,7 @@ void registerMember() {
     members.push_back(newMember);
 
     // Saving member data to a file, including skill and credit point information
-    std::ofstream outFile("memberdata.txt", std::ios::app);
+    std::ofstream outFile("memberdata.dat", std::ios::app);
     if (outFile.is_open()) {
         outFile << username << "," << password << "," << fullName << "," 
                 << phoneNumber << "," << email << "," << address << ","
@@ -75,7 +75,7 @@ void registerMember() {
 
 // Function for member login
 bool memberLogin(const std::string& username, const std::string& password) {
-    std::ifstream inFile("memberdata.txt");
+    std::ifstream inFile("memberdata.dat");
     std::string line;
     while (std::getline(inFile, line)) {
         std::istringstream iss(line);
@@ -222,9 +222,9 @@ void viewSupporters() {
     }
 }
 void loadMembersFromFile() {
-    std::ifstream inFile("memberdata.txt");
+    std::ifstream inFile("memberdata.dat");
     if (!inFile) {
-        std::cerr << "Unable to open memberdata.txt for reading.\n";
+        std::cerr << "Unable to open memberdata.dat for reading.\n";
         return;
     }
 
@@ -257,9 +257,9 @@ void loadMembersFromFile() {
     }
 }
 void loadSupportersFromFile(std::vector<Supporter>& supporters) {
-    std::ifstream inFile("supporter.txt");
+    std::ifstream inFile("supporter.dat");
     if (!inFile) {
-        std::cerr << "Unable to open supporter.txt for reading.\n";
+        std::cerr << "Unable to open supporter.dat for reading.\n";
         return;
     }
 

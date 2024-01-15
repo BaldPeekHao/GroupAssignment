@@ -11,7 +11,7 @@ bool Admin::login(std::string username, std::string password) {
 }
 
 void Admin::resetUserPassword(std::vector<Member>& members, const std::string& username, const std::string& newPassword) {
-    std::ifstream inFile("memberdata.txt");
+    std::ifstream inFile("memberdata.dat");
     std::vector<std::string> lines;
     std::string line;
     bool found = false;
@@ -37,7 +37,7 @@ void Admin::resetUserPassword(std::vector<Member>& members, const std::string& u
         return;
     }
 
-    std::ofstream outFile("memberdata.txt");
+    std::ofstream outFile("memberdata.dat");
     for (const auto& updatedLine : lines) {
         outFile << updatedLine << std::endl;
     }

@@ -42,8 +42,13 @@ private:
 
     std::vector<Skill> skills;
     bool isListed;
+    int creditPoints; // Add credit points attribute
+    float hostRating; // Add host rating attribute
+
 
 public:
+    int getCreditPoints() const { return creditPoints; }
+    float getHostRating() const { return hostRating; }
     Member(std::string username, std::string password, std::string fullName, 
            std::string phoneNumber, std::string email, std::string address)
         : User(username, password, fullName, phoneNumber, email, address), isListed(false) {}
@@ -135,7 +140,7 @@ public:
 // Method to reset user password
 void resetUserPassword(std::vector<Member>& members, const std::string& username, const std::string& newPassword) {
     // Step 1: Read all data from the file
-    std::ifstream inFile("memberdata.txt");
+    std::ifstream inFile("memberdata.dat");
     std::vector<std::string> lines;
     std::string line;
     bool found = false;
@@ -166,7 +171,7 @@ void resetUserPassword(std::vector<Member>& members, const std::string& username
     }
 
     // Step 2: Write the updated data back to the file
-    std::ofstream outFile("memberdata.txt");
+    std::ofstream outFile("memberdata.dat");
     for (const auto& updatedLine : lines) {
         outFile << updatedLine << std::endl;
     }
@@ -235,7 +240,7 @@ void registerMember() {
     members.push_back(newMember);
 
     // Saving member data to a file, including skill and credit point information
-    std::ofstream outFile("memberdata.txt", std::ios::app);
+    std::ofstream outFile("memberdata.dat", std::ios::app);
     if (outFile.is_open()) {
         outFile << username << "," << password << "," << fullName << "," 
                 << phoneNumber << "," << email << "," << address << ","
@@ -254,12 +259,37 @@ void viewSupporters() {
         std::cout << "Username: " << supporter.getUsername() << ", Full Name: " << supporter.getFullName() << std::endl;
     }
 }
+void bookSupporter(const std::vector<Supporter>& suitableSupporters) {
+    if (suitableSupporters.empty()) {
+        std::cout << "No suitable supporters available to book.\n";
+        return;
+    }
+
+    std::cout << "Select a supporter to book:\n";
+    for (size_t i = 0; i < suitableSupporters.size(); ++i) {
+        std::cout << i + 1 << ". " << suitableSupporters[i].getFullName() << "\n";
+    }
+
+    size_t choice;
+    std::cin >> choice;
+    if (choice < 1 || choice > suitableSupporters.size()) {
+        std::cout << "Invalid choice.\n";
+        return;
+    }
+
+    // Handle the booking logic here
+    const auto& selectedSupporter = suitableSupporters[choice - 1];
+    std::cout << "You have successfully booked " << selectedSupporter.getFullName() << ".\n";
+
+    // Additional logic for booking (e.g., updating files or notifying the supporter) can be added here
+}
+
 
 // Function for member login
 bool memberLogin(std::string username, std::string password) {
-    std::ifstream inFile("memberdata.txt");
+    std::ifstream inFile("memberdata.dat");
     if (!inFile) {
-        std::cerr << "Unable to open memberdata.txt for reading.\n";
+        std::cerr << "Unable to open memberdata.dat for reading.\n";
         return false;
     }
 
@@ -276,19 +306,23 @@ bool memberLogin(std::string username, std::string password) {
     return false;
 }
 
-void searchForSupporters(const std::vector<Supporter>& supporters, const std::string& city, int memberCreditPoints, float memberHostRating) {
-    bool found = false;
-    std::cout << "Supporters in " << city << ":\n";
+std::vector<Supporter> searchForSupporters(const std::vector<Supporter>& supporters, const std::string& searchCity, int memberCreditPoints, float memberHostRating) {
+    std::vector<Supporter> suitableSupporters;
     for (const auto& supporter : supporters) {
-        if (supporter.getCity() == city && memberCreditPoints >= supporter.getConsumingPointsPerHour() && memberHostRating >= supporter.getMinimumHostRating()) {
-            std::cout << "Username: " << supporter.getUsername() << ", Full Name: " << supporter.getFullName() << std::endl;
-            found = true;
+        std::cout << "Checking supporter: " << supporter.getFullName() << " in city: " << supporter.getCity() 
+                  << " with points per hour: " << supporter.getConsumingPointsPerHour() 
+                  << " and min host rating: " << supporter.getMinimumHostRating() << std::endl;
+
+        if (supporter.getCity() == searchCity && 
+            memberCreditPoints >= supporter.getConsumingPointsPerHour() &&
+            memberHostRating >= supporter.getMinimumHostRating()) {
+            suitableSupporters.push_back(supporter);
+            std::cout << "Supporter suitable: " << supporter.getFullName() << std::endl;
         }
     }
-    if (!found) {
-        std::cout << "No suitable supporters found in " << city << ".\n";
-    }
+    return suitableSupporters;
 }
+
 
 // Note: You'll need to add getCity(), getConsumingPointsPerHour(), and getMinimumHostRating() methods in your Supporter class.
 
@@ -322,7 +356,8 @@ void memberMenu(Member& member) {
         std::cout << "3. List Myself for Booking\n";
         std::cout << "4. Unlist Myself\n";
         std::cout << "5. Supporter Searching\n";
-        std::cout << "6. Logout\n";
+        std::cout << "6. Booking a Supporter\n";
+        std::cout << "7. Logout\n";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -407,21 +442,33 @@ void memberMenu(Member& member) {
                 }
                 break;
             }
+            case 6: { // New case for booking a supporter
+            std::cout << "Searching for suitable supporters...\n";
+            // Assuming getCreditPoints() and getHostRating() are methods of Member class
+            int memberCreditPoints = member.getCreditPoints();
+            float memberHostRating = member.getHostRating();
+            std::string memberCity = member.getAddress(); // Assuming the city is stored in address
 
-            case 6:
+            auto suitableSupporters = searchForSupporters(supporters, memberCity, memberCreditPoints, memberHostRating);
+            bookSupporter(suitableSupporters);
+            break;
+}
+
+            case 7:
                 // Option 5: Logout
                 std::cout << "Logging out...\n";
                 return;
             default:
                 std::cout << "Invalid choice. Please try again.\n";
+            
         }
     }
 }
 // Function to load members from file
 void loadMembersFromFile() {
-    std::ifstream inFile("memberdata.txt");
+    std::ifstream inFile("memberdata.dat");
     if (!inFile) {
-        std::cerr << "Unable to open memberdata.txt for reading.\n";
+        std::cerr << "Unable to open memberdata.dat for reading.\n";
         return;
     }
 
@@ -456,9 +503,9 @@ void loadMembersFromFile() {
 
 
 void loadSupportersFromFile(std::vector<Supporter>& supporters) {
-    std::ifstream inFile("supporter.txt");
+    std::ifstream inFile("supporter.dat");
     if (!inFile) {
-        std::cerr << "Unable to open supporter.txt for reading.\n";
+        std::cerr << "Unable to open supporter.dat for reading.\n";
         return;
     }
 
@@ -501,7 +548,11 @@ int main() {
     loadSupportersFromFile(supporters); // Load supporters from a file
     int choice;
     while (true) {
+        std::cout <<"EEET2482/COSC2082 ASSIGNMENT\n";
         std::cout << "TIME BANK APPLICATION\n";
+        std::cout <<"Instructor: Mr. Tran Duc Linh\n";
+        std::cout <<"Group: 17 \n";
+        std::cout <<"s3979259 Truong Tuong Hao \n";
         std::cout << "0. Exit\n";
         std::cout << "1. Register as a new member\n";
         std::cout << "2. Login as Admin\n";
