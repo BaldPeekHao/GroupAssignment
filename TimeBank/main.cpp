@@ -72,7 +72,6 @@ void registerMember() {
     }
 }
 
-
 // Function for member login
 bool memberLogin(const std::string& username, const std::string& password) {
     std::ifstream inFile("memberdata.dat");
@@ -109,6 +108,46 @@ void adminLogin() {
         std::cout << "Incorrect admin credentials.\n";
     }
 }
+void bookSupporter(const std::vector<Supporter>& suitableSupporters) {
+    if (suitableSupporters.empty()) {
+        std::cout << "No suitable supporters available to book.\n";
+        return;
+    }
+
+    std::cout << "Select a supporter to book:\n";
+    for (size_t i = 0; i < suitableSupporters.size(); ++i) {
+        std::cout << i + 1 << ". " << suitableSupporters[i].getFullName() << "\n";
+    }
+
+    size_t choice;
+    std::cin >> choice;
+    if (choice < 1 || choice > suitableSupporters.size()) {
+        std::cout << "Invalid choice.\n";
+        return;
+    }
+
+    // Handle the booking logic here
+    const auto& selectedSupporter = suitableSupporters[choice - 1];
+    std::cout << "You have successfully booked " << selectedSupporter.getFullName() << ".\n";
+
+    // Additional logic for booking (e.g., updating files or notifying the supporter) can be added here
+}
+std::vector<Supporter> searchForSupporters(const std::vector<Supporter>& supporters, const std::string& searchCity, int memberCreditPoints, float memberHostRating) {
+    std::vector<Supporter> suitableSupporters;
+    for (const auto& supporter : supporters) {
+        std::cout << "Checking supporter: " << supporter.getFullName() << " in city: " << supporter.getCity() 
+                  << " with points per hour: " << supporter.getConsumingPointsPerHour() 
+                  << " and min host rating: " << supporter.getMinimumHostRating() << std::endl;
+
+        if (supporter.getCity() == searchCity && 
+            memberCreditPoints >= supporter.getConsumingPointsPerHour() &&
+            memberHostRating >= supporter.getMinimumHostRating()) {
+            suitableSupporters.push_back(supporter);
+            std::cout << "Supporter suitable: " << supporter.getFullName() << std::endl;
+        }
+    }
+    return suitableSupporters;
+}
 void memberMenu(Member& member) {
     int choice;
     while (true) {
@@ -119,7 +158,8 @@ void memberMenu(Member& member) {
         std::cout << "3. List Myself for Booking\n";
         std::cout << "4. Unlist Myself\n";
         std::cout << "5. Supporter Searching\n";
-        std::cout << "6. Logout\n";
+        std::cout << "6. Booking a Supporter\n";
+        std::cout << "7. Logout\n";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -164,7 +204,7 @@ void memberMenu(Member& member) {
                 float memberHostRating;
                 std::string searchCity;
 
-                std::cout << "Enter your credit points: ";
+                std::cout << "Enter your credit points (open the memberdata.dat to check): ";
                 // Ensure that the input is a valid integer.
                 while (!(std::cin >> memberCreditPoints)) {
                     std::cin.clear(); // Clear the error state.
@@ -172,7 +212,7 @@ void memberMenu(Member& member) {
                     std::cout << "Invalid input. Please enter a number for credit points: ";
                 }
 
-                std::cout << "Enter your host-rating score: ";
+                std::cout << "Enter your host-rating score (open the memberdata.dat to check): ";
                 // Ensure that the input is a valid float.
                 while (!(std::cin >> memberHostRating)) {
                     std::cin.clear(); // Clear the error state.
@@ -204,13 +244,25 @@ void memberMenu(Member& member) {
                 }
                 break;
             }
+            case 6: { // New case for booking a supporter
+            std::cout << "Searching for suitable supporters...\n";
+            // Assuming getCreditPoints() and getHostRating() are methods of Member class
+            int memberCreditPoints = member.getCreditPoints();
+            float memberHostRating = member.getHostRating();
+            std::string memberCity = member.getAddress(); // Assuming the city is stored in address
 
-            case 6:
+            auto suitableSupporters = searchForSupporters(supporters, memberCity, memberCreditPoints, memberHostRating);
+            bookSupporter(suitableSupporters);
+            break;
+}
+
+            case 7:
                 // Option 5: Logout
                 std::cout << "Logging out...\n";
                 return;
             default:
                 std::cout << "Invalid choice. Please try again.\n";
+            
         }
     }
 }

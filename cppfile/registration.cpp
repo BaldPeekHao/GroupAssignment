@@ -54,7 +54,7 @@ public:
         : User(username, password, fullName, phoneNumber, email, address), isListed(false) {}
 
     void addSkill(const std::string& skillName, int pointsPerHour, float minHostRating) {
-        skills.push_back({skillName, pointsPerHour, minHostRating});
+        skills.push_back({skillName, pointsPerHour,  minHostRating});
     }
 
     void listYourself() {
@@ -193,7 +193,7 @@ void resetUserPassword(std::vector<Member>& members, const std::string& username
 // Global variables
 std::vector<Member> members; // List of members
 std::vector<Supporter> supporters; // List of supporters
-Admin admin("admin", "admin123"); // Predefined admin
+Admin admin("admin", "rmit1234"); // Predefined admin
 
 // Function to register a new member
 void registerMember() {
@@ -280,8 +280,9 @@ void bookSupporter(const std::vector<Supporter>& suitableSupporters) {
     // Handle the booking logic here
     const auto& selectedSupporter = suitableSupporters[choice - 1];
     std::cout << "You have successfully booked " << selectedSupporter.getFullName() << ".\n";
-
+    
     // Additional logic for booking (e.g., updating files or notifying the supporter) can be added here
+    
 }
 
 
@@ -402,7 +403,7 @@ void memberMenu(Member& member) {
                 float memberHostRating;
                 std::string searchCity;
 
-                std::cout << "Enter your credit points: ";
+                std::cout << "Enter your credit points (open the memberdata.dat to check): ";
                 // Ensure that the input is a valid integer.
                 while (!(std::cin >> memberCreditPoints)) {
                     std::cin.clear(); // Clear the error state.
@@ -410,7 +411,7 @@ void memberMenu(Member& member) {
                     std::cout << "Invalid input. Please enter a number for credit points: ";
                 }
 
-                std::cout << "Enter your host-rating score: ";
+                std::cout << "Enter your host-rating score (open the memberdata.dat to check): ";
                 // Ensure that the input is a valid float.
                 while (!(std::cin >> memberHostRating)) {
                     std::cin.clear(); // Clear the error state.
@@ -419,7 +420,7 @@ void memberMenu(Member& member) {
                 }
 
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any leftover newline character.
-                std::cout << "Enter city to search for supporters: ";
+                std::cout << "Enter city to search for supporters (open the supporter.dat to check): ";
                 std::getline(std::cin, searchCity);
 
                 // Search for suitable supporters
@@ -551,7 +552,7 @@ int main() {
         std::cout <<"EEET2482/COSC2082 ASSIGNMENT\n";
         std::cout << "TIME BANK APPLICATION\n";
         std::cout <<"Instructor: Mr. Tran Duc Linh\n";
-        std::cout <<"Group: 17 \n";
+        std::cout <<"Group: Group 17 \n";
         std::cout <<"s3979259 Truong Tuong Hao \n";
         std::cout << "0. Exit\n";
         std::cout << "1. Register as a new member\n";

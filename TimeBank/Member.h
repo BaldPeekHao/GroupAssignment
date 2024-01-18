@@ -15,11 +15,14 @@ private:
 
     std::vector<Skill> skills;
     bool isListed;
+    int creditPoints; // Add credit points attribute
+    float hostRating; // Add host rating attribute
 // Constructor
 public:
     Member(std::string username, std::string password, std::string fullName,
            std::string phoneNumber, std::string email, std::string address);
-
+    int getCreditPoints() const { return creditPoints; }
+    float getHostRating() const { return hostRating; }
     void addSkill(const std::string& skillName, int pointsPerHour, float minHostRating);
     void listYourself();
     void unlistYourself();
