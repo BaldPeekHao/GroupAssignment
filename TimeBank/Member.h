@@ -4,7 +4,7 @@
 #include "User.h"
 #include <string>
 #include <vector>
-
+#include "Request.h"
 class Member : public User {
 private:
     struct Skill {
@@ -14,6 +14,7 @@ private:
     };
 
     std::vector<Skill> skills;
+    std::vector<Request> requests;
     bool isListed;
     int creditPoints; // Add credit points attribute
     float hostRating; // Add host rating attribute
@@ -23,6 +24,10 @@ public:
            std::string phoneNumber, std::string email, std::string address);
     int getCreditPoints() const { return creditPoints; }
     float getHostRating() const { return hostRating; }
+    void setListStatus(bool status);
+    void addRequest(const Request& request);
+    void viewRequests() const;
+    void loadRequests();
     void addSkill(const std::string& skillName, int pointsPerHour, float minHostRating);
     void listYourself();
     void unlistYourself();

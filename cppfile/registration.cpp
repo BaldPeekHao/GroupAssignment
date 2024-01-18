@@ -30,7 +30,20 @@ public:
     std::string getEmail() const { return email; }
     std::string getAddress() const { return address; }
 };
+class Request {
+private:
+    std::string requesterUsername;
+    std::string skillRequested;
+    std::string requestTime; // Assuming a simple string for time, you can use more complex time handling
 
+public:
+    Request(std::string requester, std::string skill, std::string time)
+        : requesterUsername(requester), skillRequested(skill), requestTime(time) {}
+
+    std::string getRequesterUsername() const { return requesterUsername; }
+    std::string getSkillRequested() const { return skillRequested; }
+    std::string getRequestTime() const { return requestTime; }
+};
 // Member class derived from User
 class Member : public User {
 private:
@@ -41,6 +54,8 @@ private:
     };
 
     std::vector<Skill> skills;
+    std::vector<Member> members; // List of members
+    std::vector<Request> requests;
     bool isListed;
     int creditPoints; // Add credit points attribute
     float hostRating; // Add host rating attribute
@@ -53,22 +68,52 @@ public:
            std::string phoneNumber, std::string email, std::string address)
         : User(username, password, fullName, phoneNumber, email, address), isListed(false) {}
 
+    void addRequest(const Request& request) {
+        requests.push_back(request);
+    }
+    void Member::viewRequests() const;
+    
     void addSkill(const std::string& skillName, int pointsPerHour, float minHostRating) {
         skills.push_back({skillName, pointsPerHour,  minHostRating});
+    }
+    void setListStatus(bool status) {
+        isListed = status;
     }
 
     void listYourself() {
         isListed = true;
         std::cout << "You are now listed for booking.\n";
+        saveListStatus(members); // Save the updated status
     }
 
     void unlistYourself() {
         isListed = false;
         std::cout << "You are no longer listed for booking.\n";
+        saveListStatus(members); // Save the updated status
     }
     bool isListedForBooking() const {
         return isListed;
     }
+    // Function to save the list/unlist status to a file
+    void saveListStatus(const std::vector<Member>& members) {
+    std::ofstream outFile("list_status.dat"); // Open file for writing, truncating the file first
+
+    if (!outFile) {
+        std::cerr << "Unable to open list_status.dat for writing.\n";
+        return;
+    }
+
+    for (const auto& member : members) {
+        outFile << member.getUsername() << "," << (member.isListedForBooking() ? "1" : "0") << "\n";
+    }
+
+    outFile.flush(); // Explicitly flush the stream buffer
+    if (!outFile.good()) {
+        std::cerr << "Error occurred while writing to the file.\n";
+    }
+
+    outFile.close();
+}
     void showInfo() const {
         std::cout << "Username: " << getUsername() << "\n";
         std::cout << "Full Name: " << getFullName() << "\n";
@@ -79,6 +124,19 @@ public:
         
         displaySkills(); // Display all the skills
     }
+    void Member::viewRequests() const {
+    if (requests.empty()) {
+        std::cout << "No requests for your skills at the moment." << std::endl;
+        return;
+    }
+
+    std::cout << "Requests for Your Skills:" << std::endl;
+    for (const auto& request : requests) {
+        std::cout << "Requester: " << request.getRequesterUsername()
+                  << ", Skill Requested: " << request.getSkillRequested()
+                  << ", Request Time: " << request.getRequestTime() << std::endl;
+    }
+}
 
     void displaySkills() const {
         if (skills.empty()) {
@@ -358,7 +416,8 @@ void memberMenu(Member& member) {
         std::cout << "4. Unlist Myself\n";
         std::cout << "5. Supporter Searching\n";
         std::cout << "6. Booking a Supporter\n";
-        std::cout << "7. Logout\n";
+        std::cout << "7. View Request to my Skills\n";
+        std::cout << "8. Logout\n";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -453,9 +512,12 @@ void memberMenu(Member& member) {
             auto suitableSupporters = searchForSupporters(supporters, memberCity, memberCreditPoints, memberHostRating);
             bookSupporter(suitableSupporters);
             break;
-}
-
+        }
             case 7:
+            member.viewRequests();
+            break;
+
+            case 8:
                 // Option 5: Logout
                 std::cout << "Logging out...\n";
                 return;
@@ -541,12 +603,39 @@ void loadSupportersFromFile(std::vector<Supporter>& supporters) {
         supporters.emplace_back(username, password, fullName, phoneNumber, email, address, consumingPoints, minHostRating, city);
     }
 }
+// Function to load the list/unlist status from a file
+void loadListStatus(std::vector<Member>& members) {
+    std::ifstream inFile("list_status.dat");
+    if (!inFile) {
+        // The file may not exist initially, and that's okay
+        return;
+    }
+
+    std::string line;
+    while (std::getline(inFile, line)) {
+        std::istringstream iss(line);
+        std::string username, statusStr;
+        getline(iss, username, ',');
+        getline(iss, statusStr, ',');
+
+        bool isListed = (statusStr == "1"); // Convert the string to a boolean
+        // Find the member in the vector and update the list/unlist status
+        auto it = std::find_if(members.begin(), members.end(),
+            [&](const Member& m) { return m.getUsername() == username; });
+        if (it != members.end()) {
+            it->setListStatus(isListed);
+        }
+    }
+
+    inFile.close();
+}
 
 
 // Main function
 int main() {
     loadMembersFromFile(); // Load members from file
     loadSupportersFromFile(supporters); // Load supporters from a file
+    loadListStatus(members); // Load list/unlist status
     int choice;
     while (true) {
         std::cout <<"EEET2482/COSC2082 ASSIGNMENT\n";

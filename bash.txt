@@ -1,4 +1,4 @@
-g++ main.cpp Admin.cpp Member.cpp User.cpp Supporter.cpp -o main
+g++ main.cpp Admin.cpp Member.cpp User.cpp Supporter.cpp Request.cpp -o main
 git add -A
 git commit -m "add files"
 git push

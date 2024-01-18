@@ -6,13 +6,14 @@
 #include "Member.h"
 #include "Supporter.h"
 #include "Admin.h"
+#include "Request.h"
 #include <algorithm>
 #include <limits>
 
 // Global variables
 std::vector<Member> members; 
 std::vector<Supporter> supporters; 
-Admin admin("admin", "admin123"); 
+Admin admin("admin", "rmit1234"); 
 
 // Function to register a new member
 void registerMember() {
@@ -159,7 +160,8 @@ void memberMenu(Member& member) {
         std::cout << "4. Unlist Myself\n";
         std::cout << "5. Supporter Searching\n";
         std::cout << "6. Booking a Supporter\n";
-        std::cout << "7. Logout\n";
+        std::cout << "7. View Requests to My Skills\n";
+        std::cout << "8. Logout\n";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -254,9 +256,12 @@ void memberMenu(Member& member) {
             auto suitableSupporters = searchForSupporters(supporters, memberCity, memberCreditPoints, memberHostRating);
             bookSupporter(suitableSupporters);
             break;
-}
-
+        }
             case 7:
+            member.viewRequests();
+            break;
+
+            case 8:
                 // Option 5: Logout
                 std::cout << "Logging out...\n";
                 return;
@@ -388,6 +393,7 @@ int main() {
         auto it = std::find_if(members.begin(), members.end(), 
                                [&](const Member& m) { return m.getUsername() == username; });
         if (it != members.end()) {
+            it->loadRequests(); // Load requests for the logged-in member
             memberMenu(*it); // Show member menu
         } else {
             std::cout << "Member not found in records.\n";
