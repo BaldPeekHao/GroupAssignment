@@ -161,7 +161,8 @@ void memberMenu(Member& member) {
         std::cout << "5. Supporter Searching\n";
         std::cout << "6. Booking a Supporter\n";
         std::cout << "7. View Requests to My Skills\n";
-        std::cout << "8. Logout\n";
+        std::cout << "8. Manage Requests\n";
+        std::cout << "9. Logout\n";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -262,7 +263,11 @@ void memberMenu(Member& member) {
             break;
 
             case 8:
-                // Option 5: Logout
+            member.manageRequests();
+            break;
+
+            case 9:
+                // Option 9: Logout
                 std::cout << "Logging out...\n";
                 return;
             default:
@@ -357,7 +362,14 @@ int main() {
     loadSupportersFromFile(supporters); // Load supporters from a file
     int choice;
     while (true) {
-        std::cout << "TIME BANK APPLICATION\n";
+        std::cout << "EEET2482/COSC2082 ASSIGNMENT\n";
+        std::cout << "''TIME BANK'' APPLICATION\n";
+        std::cout << "Instructor: Tran Duc Linh\n";
+        std::cout << "Group: 17\n";
+        std::cout << "s3979259, Truong Tuong Hao\n";
+        std::cout << "s3927197, Vo Duy Dinh\n";
+        std::cout << "s3978742, Huynh Nguyen Thien Minh\n";
+        std::cout << "s3924695, Truong Loc Thien\n";
         std::cout << "0. Exit\n";
         std::cout << "1. Register as a new member\n";
         std::cout << "2. Login as Admin\n";

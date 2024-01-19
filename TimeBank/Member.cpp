@@ -85,4 +85,41 @@ void Member::loadRequests() {
         }
     }
 }
+void Member::manageRequests() {
+    if (requests.empty()) {
+        std::cout << "No requests available." << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < requests.size(); ++i) {
+        std::cout << i + 1 << ". " << "Requester: " << requests[i].getRequesterUsername()
+                  << ", Skill Requested: " << requests[i].getSkillRequested()
+                  << ", Request Time: " << requests[i].getRequestTime() << std::endl;
+    }
+    std::cout << "Enter the number of the request to accept (or 0 to cancel): ";
+    int choice;
+    std::cin >> choice;
+
+    if (choice > 0 && choice <= requests.size()) {
+        // Logic to accept the chosen request and reject overlapping ones
+        // Update request.dat file accordingly
+        updateRequestFile(); // This is a new method you need to implement
+    }
+}
+void Member::updateRequestFile() {
+    std::ofstream outFile("request.dat");
+    if (!outFile) {
+        std::cerr << "Error opening request.dat file for writing." << std::endl;
+        return;
+    }
+
+    for (const auto& request : requests) {
+        // Write each request's state to the file
+        // Include information about whether the request is accepted, rejected, or pending
+    }
+    outFile.close();
+}
+
+
+
+
 

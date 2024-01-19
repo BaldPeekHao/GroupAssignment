@@ -28,6 +28,8 @@ public:
     void addRequest(const Request& request);
     void viewRequests() const;
     void loadRequests();
+    void manageRequests();
+    void updateRequestFile();
     void addSkill(const std::string& skillName, int pointsPerHour, float minHostRating);
     void listYourself();
     void unlistYourself();
