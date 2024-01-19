@@ -2,14 +2,14 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+// Constructor for Admin
 Admin::Admin(std::string username, std::string password) 
     : adminUsername(username), adminPassword(password) {}
 
 bool Admin::login(std::string username, std::string password) {
     return username == adminUsername && password == adminPassword;
 }
-
+// Admin main functions
 void Admin::resetUserPassword(std::vector<Member>& members, const std::string& username, const std::string& newPassword) {
     std::ifstream inFile("memberdata.dat");
     std::vector<std::string> lines;

@@ -8,6 +8,8 @@ private:
     std::string name;
     int pointsPerHour;
     float minHostRating;
+    std::string availableStartTime;
+    std::string availableEndTime;
 
 public:
     // Constructor
@@ -22,6 +24,10 @@ public:
     void setName(const std::string& name);
     void setPointsPerHour(int points);
     void setMinHostRating(float rating);
+
+    void setAvailableTime(const std::string& startTime, const std::string& endTime);
+    std::string getAvailableStartTime() const;
+    std::string getAvailableEndTime() const;
 };
 
 #endif // SKILL_H

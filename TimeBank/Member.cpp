@@ -119,6 +119,24 @@ void Member::updateRequestFile() {
     outFile.close();
 }
 
+void Member::blockMember(const std::string& username) {
+    blockedMembers.insert(username);
+}
+
+void Member::unblockMember(const std::string& username) {
+    blockedMembers.erase(username);
+}
+
+bool Member::isBlocked(const std::string& username) const {
+    return blockedMembers.find(username) != blockedMembers.end();
+}
+void Member::rateSupporter(const std::string& supporterUsername, float score, const std::string& comments) {
+    ratingsGiven.emplace_back(score, comments, supporterUsername);
+}
+void Member::rateHost(const std::string& hostUsername, float score, const std::string& comments) {
+    ratingsGivenAsSupporter.emplace_back(score, comments, hostUsername);
+}
+
 
 
 

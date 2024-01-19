@@ -10,9 +10,10 @@
 #include <algorithm>
 #include <limits>
 
-// Global variables
+// These are global variables
 std::vector<Member> members; 
 std::vector<Supporter> supporters; 
+// Pre-defined username and password for admin account as requirement
 Admin admin("admin", "rmit1234"); 
 
 // Function to register a new member
@@ -21,8 +22,8 @@ void registerMember() {
     std::string skillName;
     int pointsPerHour;
     float minHostRating;
-    int creditPoints = 20; // Initialize credit points to 20 for new members
-
+    int creditPoints = 20; // Automatically initialize credit points to 20 for new members
+// Input your registration information
     std::cout << "Enter username: ";
     std::cin >> username;
     std::cout << "Enter password: ";
@@ -38,7 +39,7 @@ void registerMember() {
     std::cin.ignore(); // To ignore the newline left in the buffer
     std::getline(std::cin, address);
 
-    // Collect skill information
+    // Input to collect skill information
     std::cout << "Enter your skill (e.g., English tutoring): ";
     std::getline(std::cin, skillName);
 
@@ -46,7 +47,7 @@ void registerMember() {
     std::cout << "Enter points per hour for this skill: ";
     while (!(std::cin >> tempPointsPerHour)) {
         std::cout << "Invalid input. Please enter a number for points per hour: ";
-        std::cin.clear(); // Clear error flags
+        std::cin.clear(); // Clear error flags by manual
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore incorrect input
     }
     pointsPerHour = static_cast<int>(tempPointsPerHour); // Cast to int if necessary
@@ -59,7 +60,7 @@ void registerMember() {
     newMember.addSkill(skillName, pointsPerHour, minHostRating);
     members.push_back(newMember);
 
-    // Saving member data to a file, including skill and credit point information
+    // Save all those data to database "member.dat"
     std::ofstream outFile("memberdata.dat", std::ios::app);
     if (outFile.is_open()) {
         outFile << username << "," << password << "," << fullName << "," 
@@ -73,7 +74,7 @@ void registerMember() {
     }
 }
 
-// Function for member login
+// Function for member to login
 bool memberLogin(const std::string& username, const std::string& password) {
     std::ifstream inFile("memberdata.dat");
     std::string line;
@@ -88,9 +89,41 @@ bool memberLogin(const std::string& username, const std::string& password) {
     }
     return false;
 }
+void rateSupporter(Member& member) {
+    std::string supporterUsername;
+    float score;
+    std::string comments;
+
+    std::cout << "Enter supporter's username: ";
+    std::cin >> supporterUsername;
+    std::cout << "Enter score (1-5): ";
+    std::cin >> score;
+    std::cout << "Enter comments: ";
+    std::cin.ignore(); // To ignore the newline left in the buffer
+    std::getline(std::cin, comments);
+
+    member.rateSupporter(supporterUsername, score, comments);
+    std::cout << "You have rated " << supporterUsername << std::endl;
+}
+void rateHost(Member& memberAsSupporter) {
+    std::string hostUsername;
+    float score;
+    std::string comments;
+
+    std::cout << "Enter host's username: ";
+    std::cin >> hostUsername;
+    std::cout << "Enter score (1-5): ";
+    std::cin >> score;
+    std::cout << "Enter comments: ";
+    std::cin.ignore();
+    std::getline(std::cin, comments);
+
+    memberAsSupporter.rateHost(hostUsername, score, comments);
+    std::cout << "You have rated " << hostUsername << std::endl;
+}
 
 
-// Admin login function
+// Admin can login with this function
 void adminLogin() {
     std::string username, password;
     std::cout << "Enter admin username: ";
@@ -109,6 +142,7 @@ void adminLogin() {
         std::cout << "Incorrect admin credentials.\n";
     }
 }
+// Secondary function to book supporter
 void bookSupporter(const std::vector<Supporter>& suitableSupporters) {
     if (suitableSupporters.empty()) {
         std::cout << "No suitable supporters available to book.\n";
@@ -151,6 +185,7 @@ std::vector<Supporter> searchForSupporters(const std::vector<Supporter>& support
 }
 void memberMenu(Member& member) {
     int choice;
+    std::string otherUsername;
     while (true) {
         // Display the member-specific menu
         std::cout << "Member Menu\n";
@@ -162,7 +197,11 @@ void memberMenu(Member& member) {
         std::cout << "6. Booking a Supporter\n";
         std::cout << "7. View Requests to My Skills\n";
         std::cout << "8. Manage Requests\n";
-        std::cout << "9. Logout\n";
+        std::cout << "9. Block a Member\n";
+        std::cout << "10. Unblock a Member\n";
+        std::cout << "11. Rate a Supporter\n";
+        std::cout << "12. Rate a Host\n";
+        std::cout << "13. Logout\n";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
@@ -203,6 +242,7 @@ void memberMenu(Member& member) {
                 member.unlistYourself();
                 break;
             case 5: {
+                // Option 4: Search for suitable supporters
                 int memberCreditPoints;
                 float memberHostRating;
                 std::string searchCity;
@@ -247,7 +287,8 @@ void memberMenu(Member& member) {
                 }
                 break;
             }
-            case 6: { // New case for booking a supporter
+            case 6: { 
+            // New case for booking a supporter
             std::cout << "Searching for suitable supporters...\n";
             // Assuming getCreditPoints() and getHostRating() are methods of Member class
             int memberCreditPoints = member.getCreditPoints();
@@ -259,15 +300,43 @@ void memberMenu(Member& member) {
             break;
         }
             case 7:
+            // Option 7: to viewRequest
             member.viewRequests();
             break;
 
             case 8:
+            // Option 8: to Accept or Cancel Request
             member.manageRequests();
             break;
 
             case 9:
-                // Option 9: Logout
+            // Option 9: to Block member from viewing info
+                std::cout << "Enter the username of the member to block: ";
+                std::cin >> otherUsername;
+                member.blockMember(otherUsername);
+                std::cout << otherUsername << " has been blocked.\n";
+                break;
+
+            case 10:
+            // Option 10: to Unblock
+                std::cout << "Enter the username of the member to unblock: ";
+                std::cin >> otherUsername;
+                member.unblockMember(otherUsername);
+                std::cout << otherUsername << " has been unblocked.\n";
+                break;
+
+            case 11:
+            // Option 11: Rate Supporter
+                rateSupporter(member);
+                break;
+
+            case 12:
+            // Option 12: Supporter rate Host
+                rateHost(member);
+                break;
+                
+            case 13:
+                // Option 13: Logout
                 std::cout << "Logging out...\n";
                 return;
             default:
@@ -358,8 +427,8 @@ void loadSupportersFromFile(std::vector<Supporter>& supporters) {
 }
 // Main function
 int main() {
-    loadMembersFromFile(); // Load members from file
-    loadSupportersFromFile(supporters); // Load supporters from a file
+    loadMembersFromFile(); // Load members from database
+    loadSupportersFromFile(supporters); // Load supporters from a database
     int choice;
     while (true) {
         std::cout << "EEET2482/COSC2082 ASSIGNMENT\n";
@@ -377,7 +446,7 @@ int main() {
         std::cout << "4. View Supporters (Non-member)\n";
         std::cout << "Enter your choice: ";
         if (!(std::cin >> choice)) {
-        std::cin.clear(); // Clear error flags
+        std::cin.clear(); 
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
         std::cout << "Invalid input. Please enter a valid choice.\n";
         continue;

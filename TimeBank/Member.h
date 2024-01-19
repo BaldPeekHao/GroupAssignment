@@ -2,8 +2,10 @@
 #define MEMBER_H
 
 #include "User.h"
+#include "Rating.h"
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include "Request.h"
 class Member : public User {
 private:
@@ -15,6 +17,9 @@ private:
 
     std::vector<Skill> skills;
     std::vector<Request> requests;
+    std::unordered_set<std::string> blockedMembers; // Set of usernames of blocked members
+    std::vector<Rating> ratingsGiven;
+    std::vector<Rating> ratingsGivenAsSupporter; // Ratings given by this member as a supporter
     bool isListed;
     int creditPoints; // Add credit points attribute
     float hostRating; // Add host rating attribute
@@ -34,7 +39,12 @@ public:
     void listYourself();
     void unlistYourself();
     void displaySkills() const;
+    void blockMember(const std::string& username);
+    void unblockMember(const std::string& username);
+    bool isBlocked(const std::string& username) const;
+    void rateSupporter(const std::string& supporterUsername, float score, const std::string& comments);
     bool isListedForBooking() const;
+    void rateHost(const std::string& hostUsername, float score, const std::string& comments);
     void showInfo() const;
 };
 

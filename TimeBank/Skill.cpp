@@ -27,4 +27,18 @@ void Skill::setPointsPerHour(int points) {
 }
 
 void Skill::setMinHostRating(float rating) {
+}
+
+void Skill::setAvailableTime(const std::string& startTime, const std::string& endTime) {
+    availableStartTime = startTime;
+    availableEndTime = endTime;
+}
+
+std::string Skill::getAvailableStartTime() const {
+    return availableStartTime;
+}
+
+std::string Skill::getAvailableEndTime() const {
+    return availableEndTime;
+}
    
